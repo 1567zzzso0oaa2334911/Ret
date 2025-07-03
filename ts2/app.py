@@ -15,7 +15,7 @@ def simulate_data(n=1000):
     np.random.seed(42)
 
     merchant_ids = [f"M10{i}" for i in range(5)]
-    products = ['POS', 'Ecom', 'OpenFloat', 'Rack', 'Reserveport']
+    products = ['POS', 'QR', 'Online', 'PayBill', 'BuyGoods']
     data = []
 
     for _ in range(n):
@@ -44,7 +44,6 @@ def matrix():
     selected_merchant = request.form.get('merchant', '')
 
     filtered_df = df.copy()
-
     if start_date:
         filtered_df = filtered_df[filtered_df['LogDate'] >= pd.to_datetime(start_date)]
     if end_date:
@@ -77,7 +76,7 @@ def matrix():
     fig.update_layout(title="Monthly Product Usage by Merchant")
     heatmap_html = pio.to_html(fig, full_html=False)
 
-    # Table with tooltips
+    # Enhanced table with tooltip (used and not used products)
     table_html = build_tooltip_table(value_matrix, hover_matrix)
 
     return render_template('matrix1.html',
@@ -113,6 +112,8 @@ def download():
 
 # Helper: HTML table with hover tooltips
 def build_tooltip_table(values_df, tooltip_df):
+    all_products = {'POS', 'QR', 'Online', 'PayBill', 'BuyGoods'}
+
     html = '''
     <table class="table table-bordered table-striped">
         <thead>
@@ -125,12 +126,21 @@ def build_tooltip_table(values_df, tooltip_df):
     for idx in values_df.index:
         html += f'<tr><td><b>{idx}</b></td>'
         for col in values_df.columns:
-            val = values_df.loc[idx, col]
-            tip = tooltip_df.loc[idx, col]
-            safe_tip = tip.replace("'", "&quot;")  # Escaping quotes for tooltips
+            val = int(values_df.loc[idx, col])
+            used_raw = tooltip_df.loc[idx, col]
+            used = set(map(str.strip, used_raw.split(','))) if used_raw != 'No products' else set()
+            not_used = all_products - used
+
+            tip = (
+                f"<b>Used:</b> {', '.join(sorted(used)) or 'None'}<br>"
+                f"<b>Not used:</b> {', '.join(sorted(not_used)) or 'None'}"
+            )
+
+            safe_tip = tip.replace("'", "&quot;").replace('"', "&quot;")
+
             html += (
-                f"<td data-bs-toggle='tooltip' data-bs-placement='top' "
-                f"data-bs-title='{safe_tip}'>{int(val)}</td>"
+                f"<td data-bs-toggle='tooltip' data-bs-html='true' data-bs-placement='top' "
+                f"data-bs-title=\"{safe_tip}\">{val}</td>"
             )
         html += '</tr>'
     html += '</tbody></table>'
@@ -138,5 +148,6 @@ def build_tooltip_table(values_df, tooltip_df):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
