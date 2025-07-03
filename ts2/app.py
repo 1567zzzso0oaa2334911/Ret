@@ -80,9 +80,7 @@ def matrix():
     # Table with tooltips
     table_html = build_tooltip_table(value_matrix, hover_matrix)
 
-    # Note: The original code referenced 'matrix.html' or 'matrix1.html'.
-    # Ensure your HTML file name matches what you intend to use.
-    return render_template('matrix1.html', # Assuming matrix1.html is the target
+    return render_template('matrix1.html',
                            plot=heatmap_html,
                            merchants=merchants,
                            selected_merchant=selected_merchant,
@@ -129,13 +127,16 @@ def build_tooltip_table(values_df, tooltip_df):
         for col in values_df.columns:
             val = values_df.loc[idx, col]
             tip = tooltip_df.loc[idx, col]
-            # Updated to use Bootstrap's data-bs-toggle and data-bs-title for tooltips
-            # The .replace() is crucial to handle quotes within the tooltip text
-           html += f'<td data-bs-toggle=\'tooltip\' data-bs-placement=\'top\' data-bs-title=\'{tip.replace("\'", "&quot;")}\'>{int(val)}</td>'
+            safe_tip = tip.replace("'", "&quot;")  # Escaping quotes for tooltips
+            html += (
+                f"<td data-bs-toggle='tooltip' data-bs-placement='top' "
+                f"data-bs-title='{safe_tip}'>{int(val)}</td>"
+            )
         html += '</tr>'
     html += '</tbody></table>'
     return html
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
