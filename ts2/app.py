@@ -131,7 +131,7 @@ def build_tooltip_table(values_df, tooltip_df):
             tip = tooltip_df.loc[idx, col]
             # Updated to use Bootstrap's data-bs-toggle and data-bs-title for tooltips
             # The .replace() is crucial to handle quotes within the tooltip text
-           # html += f'<td data-bs-toggle=\'tooltip\' data-bs-placement=\'top\' data-bs-title=\'{tip.replace("\'", "&quot;")}\'>{int(val)}</td>'
+           html += f'<td data-bs-toggle=\'tooltip\' data-bs-placement=\'top\' data-bs-title=\'{tip.replace("\'", "&quot;")}\'>{int(val)}</td>'
         html += '</tr>'
     html += '</tbody></table>'
     return html
