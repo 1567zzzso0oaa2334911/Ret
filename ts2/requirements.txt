@@ -5,3 +5,4 @@ plotly==5.15.0
 Faker==18.11.0
 setuptools==68.2.2
 wheel==0.41.2
+gunicorn==22.0.0
