@@ -15,7 +15,7 @@ def simulate_data(n=1000):
     np.random.seed(42)
 
     merchant_ids = [f"M10{i}" for i in range(5)]
-    products = ['POS', 'QR', 'Online', 'PayBill', 'BuyGoods']
+    products = ['POS', 'Ecom', 'OpenFloat', 'Rack', 'Reserveport']
     data = []
 
     for _ in range(n):
