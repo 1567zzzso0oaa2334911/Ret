@@ -112,7 +112,7 @@ def download():
 
 # Helper: HTML table with hover tooltips
 def build_tooltip_table(values_df, tooltip_df):
-    all_products = {'POS', 'Ecom', 'OpenFloat', 'Rack', 'Reserveport'}
+    all_products = {'Pos', 'Ecom', 'OpenFloat', 'Rack', 'Reserveport'}
 
     html = '''
     <table class="table table-bordered table-striped">
