@@ -15,7 +15,7 @@ def simulate_data(n=1000):
     np.random.seed(42)
 
     merchant_ids = [f"M10{i}" for i in range(5)]
-    products = ['POS', 'QR', 'Online', 'PayBill', 'BuyGoods']
+    products = ['Pos', 'Ecom', 'OpenFloat', 'Rack', 'Reserveport']
     data = []
 
     for _ in range(n):
@@ -112,7 +112,7 @@ def download():
 
 # Helper: HTML table with hover tooltips
 def build_tooltip_table(values_df, tooltip_df):
-    all_products = {'POS', 'QR', 'Online', 'PayBill', 'BuyGoods'}
+    all_products = {'POS', 'Ecom', 'OpenFloat', 'Rack', 'Reserveport'}
 
     html = '''
     <table class="table table-bordered table-striped">
