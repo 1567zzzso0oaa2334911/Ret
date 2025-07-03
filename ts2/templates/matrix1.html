@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Merchant Product Usage Matrix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+            font-family: "Inter", sans-serif; /* Using Inter font */
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .chart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-section {
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 5px;
+            padding: 8px 15px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            border-radius: 5px;
+            padding: 8px 15px;
+        }
+        .btn-success:hover {
+            background-color: #1e7e34;
+            border-color: #1e7e34;
+        }
+        .table-responsive {
+            margin-top: 30px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+            border-radius: 5px; /* Rounded corners for table cells */
+        }
+        .table th {
+            background-color: #e9ecef;
+        }
+        /* Custom tooltip styling */
+        .tooltip-inner {
+            background-color: #343a40; /* Dark background for tooltip */
+            color: #fff; /* White text */
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 0.875rem;
+            white-space: normal; /* Allow text to wrap */
+            max-width: 250px; /* Set a max-width for the tooltip */
+        }
+        .tooltip.bs-tooltip-top .tooltip-arrow::before {
+            border-top-color: #343a40;
+        }
+        .tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+            border-bottom-color: #343a40;
+        }
+        .tooltip.bs-tooltip-left .tooltip-arrow::before {
+            border-left-color: #343a40;
+        }
+        .tooltip.bs-tooltip-right .tooltip-arrow::before {
+            border-right-color: #343a40;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">Monthly Product Usage by Merchant</h2>
+
+    <!-- Filter Form -->
+    <form method="POST" class="form-section row g-3 align-items-end">
+        <div class="col-md-3">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input type="date" id="startDate" name="start_date" class="form-control rounded" value="{{ start_date }}">
+        </div>
+        <div class="col-md-3">
+            <label for="endDate" class="form-label">End Date</label>
+            <input type="date" id="endDate" name="end_date" class="form-control rounded" value="{{ end_date }}">
+        </div>
+        <div class="col-md-3">
+            <label for="merchantSelect" class="form-label">Merchant</label>
+            <select id="merchantSelect" name="merchant" class="form-select rounded">
+                <option value="">All Merchants</option>
+                {% for m in merchants %}
+                    <option value="{{ m }}" {% if selected_merchant == m %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn btn-primary rounded">Apply Filters</button>
+        </div>
+    </form>
+
+    <!-- Download CSV Form -->
+    <form method="POST" action="/download" class="mb-4 d-flex justify-content-end">
+        <input type="hidden" name="start_date" value="{{ start_date }}">
+        <input type="hidden" name="end_date" value="{{ end_date }}">
+        <input type="hidden" name="merchant" value="{{ selected_merchant }}">
+        <button type="submit" class="btn btn-success rounded">Download CSV</button>
+    </form>
+
+
+    <!-- Matrix Table with Tooltips -->
+    <div class="table-responsive">
+        <h5 class="mb-3">Matrix Preview (Hover over a cell to view products)</h5>
+        {{ table | safe }}
+    </div>
+</div>
+
+<!-- Bootstrap JS (for modals and tooltips) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Initialize Bootstrap tooltips
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
+
+</body>
+</html>
